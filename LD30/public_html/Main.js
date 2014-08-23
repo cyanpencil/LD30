@@ -4,6 +4,10 @@ var tga_loader, json_loader;
 var robe = [];
             
 var cubetto1, obj;
+
+var map1 = new Array(1, 0, 0, 1, 1, 1, 0, 0, 1);
+//var boxTerrain;
+
 $(function () {
     
 	initialize();
@@ -18,6 +22,26 @@ $(function () {
     plane.position.y=0;
     plane.position.z=-20;
     scene.add(plane);
+    
+    //--------GENERAZIONE DELLA MAPPA--------
+    var boxTerrainGeometry = new THREE.BoxGeometry(5, 5, 5);
+    var boxTerrainMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff
+    });
+    
+    for (var i=0; i<Math.sqrt(map1.length); i++){ 
+            for(var j=0; j<Math.sqrt(map1.length); j++){
+                if (map1[i*Math.sqrt(map1.length)+j] === 1){
+                    var boxTerrain = new THREE.Mesh(boxTerrainGeometry,boxTerrainMaterial);
+                    boxTerrain.position.x = j*5;
+                    boxTerrain.position.y = 0;
+                    boxTerrain.position.z = 20 + i*5;
+                  scene.add(boxTerrain);
+           }
+        }
+    }
+    //---------------------------------------
+    
 
 	tga_loader = new THREE.TGALoader();
 	json_loader = new THREE.JSONLoader();
@@ -29,12 +53,15 @@ $(function () {
 	var pointLight = new THREE.PointLight(0xFFFFFF);
 	pointLight.position.set(0, 0, 30);
 	scene.add(pointLight);
+        
+        
 	
 	var loader = new THREE.OBJMTLLoader();
-	loader.load('untitled.obj', 'untitled.mtl', function (object) {
+	loader.load('castle.obj', 'castle.mtl', function (object) {
 		obj=object;
 		obj.position.y = -10;
-		obj.scale.set(9,9,9);
+		obj.scale.set(1,1,1);
+                obj.rotation.y = 10;
 		scene.add(obj);
 	});
 	
@@ -52,7 +79,7 @@ function initialize() {
     scene = new THREE.Scene();
     
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = 0; camera.position.y = 0; camera.position.z = 80;
+    camera.position.x = 0; camera.position.y = 20; camera.position.z = 80;
     camera.lookAt(scene.position);
 
     renderer = new THREE.WebGLRenderer({antialias : false});
@@ -107,8 +134,8 @@ var depthShader = THREE.ShaderLib[ "depthRGBA" ];
         //Inserire qui tutte le funzioni di animazione (esempio i pesci che ondeggiano)
 		//E tutte le cose che si devono ridisegnare in un certo modo ogni frame
 //		cubetto1.rotation.x += .1;
-//		for (var i = 0; i < robe.lenght; i++) {robe[i].rotation.y += .1;}
-        
+		for (var i = 0; i < robe.lenght; i++) {robe[i].rotation.y += .1;}
+        //obj.rotation.y += .01;
         scene.overrideMaterial = depthMaterial;
 		renderer.render( scene, camera, depthTarget );
 
