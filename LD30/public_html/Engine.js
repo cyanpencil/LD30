@@ -19,10 +19,26 @@ function engine_main_loop() {
 
 //Funzione chiamata da engine_main_loop. Chiamata 1/t_tick volte al secondo.
 function tick() {
-	aggiornaPosizioni();
+	//fai attenzione a questa linea
+	setTimeout(aggiornaPosizioni, 0); //potrebbe rallentare molto. Attenzione. Non fare stupidaggini
 }
 
 function aggiornaPosizioni() {
 		obj.rotation.x += .1;
-		for (var i = 0; i < robe.length; i++) {robe[i].rotation.y += .01;}
+		for (var i = 0; i < meshes.length; i++) {meshes[i].rotation.y += .01;}
+		for (var i = 0; i < personaggi.length; i++) {personaggi[i].update();}
+//		protagonista.avanzaUno();
+}
+
+
+function possoFareTurno() {
+	if (Date.now() - whenTurnoStarted < turnoDuration) return false;
+	else return true;
+}
+
+var whenTurnoStarted;
+var turnoDuration = 300;
+function turno() {
+	//boh fai qualcosa
+	whenTurnoStarted = Date.now();
 }

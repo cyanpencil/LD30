@@ -8,7 +8,10 @@ var map1_lenght = Math.sqrt(map1.length);
 var map1_block_lenght = 5;
 var map1_position_x = 0, map1_position_y = 0, map1_position_z = 20;
 // -------- Modelli -------------//
-var robe = [];
+var meshes = [];
+var personaggi = [];
+var weapons = [];
+var protagonista;
 var cubetto1, obj;
 
 $(function () {
@@ -28,10 +31,10 @@ function initialize() {
     renderer = new THREE.WebGLRenderer({antialias : false});
     renderer.setClearColor( 0x000000, 0);
     renderer.setSize(window.innerWidth - 30, window.innerHeight - 60);
-//	renderer.gammaInput = true;
-//	renderer.gammeOutput = true;
-//	renderer.physicallyBasedShading = true;
-//	renderer.autoClear = false;
+	renderer.gammaInput = true;
+	renderer.gammeOutput = true;
+	renderer.physicallyBasedShading = true;
+//	renderer.autoClear = false; //roba strana, meglio non toccare
 
     projector = new THREE.Projector();  // initialize object to perform world/screen calculations
 
@@ -65,7 +68,6 @@ function initialize() {
         
         //Inserire qui tutte le funzioni di animazione (esempio i pesci che ondeggiano)
 		//E tutte le cose che si devono ridisegnare in un certo modo ogni frame
-//		for (var i in robe) {i.rotation.y += .1;}
 
         scene.overrideMaterial = depthMaterial;
 		renderer.render( scene, camera, depthTarget );
@@ -75,14 +77,6 @@ function initialize() {
     update();
 }
 
-function createScene(geometry, x, y, z, scale, tmap) {
-				tizia = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: tmap}));
-				tizia.position.set(x, y, z);
-				tizia.scale.set(scale, scale, scale);
-				tizia.rotation.y = 1;
-				scene.add(tizia);
-				robe.push(tizia);
-}
 
 function loadModels() {
     var planeGeometry = new THREE.PlaneGeometry(120,80);
@@ -96,10 +90,16 @@ function loadModels() {
 	tga_loader = new THREE.TGALoader();
 	json_loader = new THREE.JSONLoader();
 	var textureProva = tga_loader.load("palette_default.tga");
-	callbackKey = function(geometry) {createScene(geometry,  0, 0, 0, 2, textureProva)};
-	json_loader.load("chr_fox.js", callbackKey);
-	callbackKey2 = function(geometry) {createScene(geometry,  20, -10, 0, 2, textureProva)};
-	json_loader.load("furetto.js", callbackKey2);
+	Fprotagonista = function(geometry) {protagonista = creaPersonaggio(geometry,  0, 2, 15, 1, textureProva)};
+	json_loader.load("chr_fox.js", Fprotagonista);
+	FFuretto = function(geometry) {createScene(geometry,  20, -10, 0, 2, textureProva)};
+	json_loader.load("furetto.js", FFuretto);
+	FBusterSmall = function(geometry) {creaWeapon(geometry, 0, 0, 0, 1, textureProva)};
+	json_loader.load("buster_sword_small.js", FBusterSmall);
+	FBusterBig = function(geometry) {creaWeapon(geometry, 0, 0, 0, 1, textureProva)};
+	json_loader.load("buster_sword_big.js", FBusterBig);
+	
+	setTimeout(function() {protagonista.addWeapon(weapons[1]);}, 300);
 
 	var pointLight = new THREE.PointLight(0xFFFFFF);
 	pointLight.position.set(0, 0, 30);
@@ -128,6 +128,35 @@ function loadModels() {
         }
     }
     //---------------------------------------
+}
+
+function createScene(geometry, x, y, z, scale, tmap) {
+	tizia = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: tmap}));
+	tizia.position.set(x, y, z);
+	tizia.scale.set(scale, scale, scale);
+	tizia.rotation.y = 1;
+	scene.add(tizia);
+	meshes.push(tizia);
+	return tizia;
+}
+
+function creaPersonaggio(geometry, x, y, z, scale, tmap) {
+	//Si ricorda che il personaggio e' un Object3D che contiene la mesh
+	var temp = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: tmap}));
+	var tamp = new Personaggio(temp,x,y,z);
+//	tamp.position.set(x,50,z);
+	tamp.scale.set(scale,scale,scale);
+	personaggi.push(tamp);
+	scene.add(tamp);
+	return tamp;
+}
+
+function creaWeapon(geometry, x, y, z, scale, tmap) {
+	var temp = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:tmap}));
+	temp.position.set(x,y,z);
+	temp.scale.set(scale,scale,scale);
+	weapons.push(temp);
+	return temp;
 }
 
 function onDocumentMouseDown( event ) {
