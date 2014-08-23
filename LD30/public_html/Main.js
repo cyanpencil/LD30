@@ -6,7 +6,6 @@ var robe = [];
 var cubetto1, obj;
 
 var map1 = new Array(1, 0, 0, 1, 1, 1, 0, 0, 1);
-//var boxTerrain;
 
 $(function () {
     
