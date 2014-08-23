@@ -1,7 +1,7 @@
 //Questo engine viene chiamato dentro Main, con setTimeout(engine_main_loop, 0), creando un altro thread
 var t = Date.now();
 var t_tick = 20;
-var variazione = 0.05
+var variazione = 0.05;
 var t_sleep, lastFrameTime = 0, framesTime = 0, startFrame = 0;
 function engine_main_loop() {    
     //fps
@@ -23,7 +23,6 @@ function tick() {
 }
 
 function aggiornaPosizioni() {
-//	cubetto1.rotation.x += .1;
-		tizia.rotation.x += .1;
 		obj.rotation.x += .1;
+		for (var i = 0; i < robe.length; i++) {robe[i].rotation.y += .01;}
 }
