@@ -48,35 +48,30 @@ Personaggio.prototype.update = function() {
 			this.position.z = this.old_z + (this.target_z - this.old_z) * ratio;
 		}
 		else {
-			this.position.x = this.target_x;
-			this.position.y = this.target_y;
-			this.position.z = this.target_z;
+			this.position.set(this.target_x, this.target_y, this.target_z);
 		}
 	}
 	else if (this.prossimaAzione == AZIONE_ATTACCA) {
 		var ratio = (Date.now() - whenTurnoStarted) / turnoDuration;
-		if (ratio < this.durataAttacco) {
-			this.weapon.rotation.x += .3;
+		if (this.hasWeapon) {
+			if (ratio < this.durataAttacco) 						this.weapon.rotation.x += .3;
+			else if (ratio > 1 - this.durataAttacco && ratio < 1) 	this.weapon.rotation.x -= .3;
+			else if (ratio > 1) 									this.weapon.rotation.x = 0;
 		}
-		else if (ratio > 1 - this.durataAttacco && ratio < 1) {
-			this.weapon.rotation.x -= .3;
-		}
-		else if (ratio > 1) {
-			this.weapon.rotation.x = 0;
+		else {
+			if (ratio < this.durataAttacco) 						this.mesh.position.z += .3;
+			else if (ratio > 1 - this.durataAttacco && ratio < 1) 	this.mesh.position.z -= .3;
+			else if (ratio > 1) 									this.mesh.position.z = 0;
 		}
 	}
 }
 
 Personaggio.prototype.girati = function(direzione) {
 	switch(direzione) {
-		case 0: this.rotation.y = 0;
-			break;
-		case 1: this.rotation.y = Math.PI/2;
-			break;
-		case 2: this.rotation.y = Math.PI * 3 / 2;
-			break;
-		case 3: this.rotation.y = Math.PI;
-			break;
+		case 0: this.rotation.y = 0;				break;
+		case 1: this.rotation.y = Math.PI/2;		break;
+		case 2: this.rotation.y = Math.PI * 3 / 2;	break;
+		case 3: this.rotation.y = Math.PI;			break;
 	}
 	this.direzione = direzione;
 }
@@ -86,30 +81,21 @@ Personaggio.prototype.avanzaUno = function () {
 	this.old_y = this.position.y;
 	this.old_z = this.position.z;
 	switch(this.direzione) {
-		case 0: this.target_z += this.step_length;
-			break;
-		case 1: this.target_x += this.step_length;
-			break;
-		case 2: this.target_x -= this.step_length;
-			break;
-		case 3: this.target_z -= this.step_length;
-			break;
+		case 0: this.target_z += this.step_length;	break;
+		case 1: this.target_x += this.step_length;	break;
+		case 2: this.target_x -= this.step_length;	break;
+		case 3: this.target_z -= this.step_length;	break;
 	}
 	this.prossimaAzione = AZIONE_MUOVI;
 }
 
 Personaggio.prototype.attacca = function() {
-	if (this.hasWeapon) {
-
-	}
 	this.prossimaAzione = AZIONE_ATTACCA;
 }
 
 Personaggio.prototype.addWeapon = function (weapon) {
 	this.hasWeapon = true;
 	this.weapon = weapon;
-	this.weapon.position.x = this.weapon_x;
-	this.weapon.position.y = this.weapon_y;
-	this.weapon.position.z = this.weapon_z;
+	this.weapon.position.set(this.weapon_x, this.weapon_y, this.weapon_z);
 	this.add(weapon);
 }

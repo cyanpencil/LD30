@@ -99,7 +99,7 @@ function loadModels() {
 	FBusterBig = function(geometry) {creaWeapon(geometry, 0, 0, 0, 1, textureProva)};
 	json_loader.load("buster_sword_big.js", FBusterBig);
 	
-	setTimeout(function() {protagonista.addWeapon(weapons[1]);}, 300);
+//	setTimeout(function() {protagonista.addWeapon(weapons[1]);}, 300);
 
 	var pointLight = new THREE.PointLight(0xFFFFFF);
 	pointLight.position.set(0, 0, 30);
