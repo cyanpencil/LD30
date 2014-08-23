@@ -3,14 +3,6 @@ var scene, camera, renderer;
 var projector;
 var tga_loader, json_loader;
 // ---------- Mappa -------------//
-
-var map1 = new Array();
-var map1_lenght = 40;
-var map1_block_lenght = 5;
-var map1_position_x = 0, map1_position_y = 0, map1_position_z = 20;
-// -------- Modelli -------------//
-var robe = [];
-
 var map1 = new Array(1, 0, 0, 1, 1, 1, 0, 0, 1);
 var map1_lenght = Math.sqrt(map1.length);
 var map1_block_lenght = 5;
@@ -20,7 +12,6 @@ var meshes = [];
 var personaggi = [];
 var weapons = [];
 var protagonista;
-
 var cubetto1, obj;
 
 $(function () {
@@ -44,15 +35,9 @@ function initialize() {
 	renderer.gammaInput = true;
 	renderer.gammeOutput = true;
 	renderer.physicallyBasedShading = true;
-
-	renderer.autoClear = false;
-        renderer.shadowMapType = THREE.PCFSoftShadowMap;
-        renderer.shadowMapEnabled = true;
-       
-       
-      
-
 //	renderer.autoClear = false; //roba strana, meglio non toccare
+
+    projector = new THREE.Projector();  // initialize object to perform world/screen calculations
 
     projector = new THREE.Projector();  // initialize object to perform world/screen calculations
 
@@ -86,9 +71,6 @@ function initialize() {
         
         //Inserire qui tutte le funzioni di animazione (esempio i pesci che ondeggiano)
 		//E tutte le cose che si devono ridisegnare in un certo modo ogni frame
-
-//		for (var i in robe) {i.rotation.y += .1;}
-
 
         scene.overrideMaterial = depthMaterial;
 		renderer.render( scene, camera, depthTarget );
